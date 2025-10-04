@@ -18,7 +18,7 @@ const loggedIn = { firstname: 'Kizito' };
           <TotalBalanceBox
           accounts={[]}
           totalBanks={1}
-          totalCurrentBalance={1250.36}
+          totalCurrentBalance={11250.36}
           />
         </header>
         
