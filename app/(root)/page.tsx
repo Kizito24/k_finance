@@ -1,5 +1,5 @@
 import TotalBalanceBox from "@/components/TotalBalanceBox";
-import HeaderBox from "@/components/ui/HeaderBox";
+import HeaderBox from "@/components/HeaderBox";
 import React from "react";
 
 const Home = () => {
