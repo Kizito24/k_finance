@@ -1,4 +1,5 @@
-@tailwindcss/preflight;
+@tailwind base;
+@tailwind components;
 @tailwind utilities;
 
 * {
@@ -42,9 +43,9 @@
   background: #7878a3;
 }
 
-@layer utilities {
+@layer components {
   .input-class {
-    @apply text-16 placeholder:text-16 rounded-lg border border-gray-300 text-gray-900 placeholder:text-gray-500;
+    @apply text-[16px] placeholder:text-[16px] rounded-lg border border-gray-300 text-gray-900 placeholder:text-gray-500;
   }
 
   .sheet-content button {
@@ -52,7 +53,7 @@
   }
 
   .text14_padding10 {
-    @apply text-14 px-4 py-2.5 font-semibold;
+    @apply text-[14px] px-4 py-2.5 font-semibold;
   }
 
   .flex-center {
@@ -60,7 +61,7 @@
   }
 
   .header-2 {
-    @apply text-18 font-semibold text-gray-900;
+    @apply text-[18px] font-semibold text-gray-900;
   }
 
   .text-10 {
