@@ -17,14 +17,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-const formSchema = z.object({
-  email: z
-    .string()
-    .email(), password: z
-    .string()
-    .min(8),
-});
+import CustomInput from "./CustomInput";
+import { formSchema } from "@/lib/utils";
 
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState(null);
@@ -75,47 +69,19 @@ const AuthForm = ({ type }: { type: string }) => {
           {" "}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
+              <CustomInput
                 control={form.control}
                 name="email"
-                render={({ field }) => (
-                  <div className="form-item">
-                    <FormLabel className="form-label">Email</FormLabel>
-
-                    <div className="flex flex-col w-full">
-                      <FormControl>
-                        <Input
-                        placeholder="Enter your email"
-                        className="input-class"
-                        {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="form-message mt-2"></FormMessage>
-                    </div>
-                  </div>
-                )}
+                label="Email"
+                placeholder="Enter your email"
               />
-              <FormField
+              <CustomInput
                 control={form.control}
                 name="password"
-                render={({ field }) => (
-                  <div className="form-item">
-                    <FormLabel className="form-label">Password</FormLabel>
-
-                    <div className="flex flex-col w-full">
-                      <FormControl>
-                        <Input
-                        placeholder="Enter your password"
-                        className="input-class"
-                        {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="form-message mt-2"></FormMessage>
-                    </div>
-                  </div>
-                )}
+                label="Password"
+                placeholder="Enter your password"
               />
-              <Button type="submit">Submit</Button>
+              <Button className="form-btn" type="submit">Submit</Button>
             </form>
           </Form>
         </>
