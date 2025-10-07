@@ -2,6 +2,10 @@ import React from "react";
 import { FormControl, FormField, FormLabel, FormMessage } from "./ui/form";
 import { Input } from "./ui/input";
 import { CustomInputProps } from "@/types";
+import { authFormSchema } from "@/lib/utils";
+
+  const formSchema = authFormSchema('sign-up');
+
 
 const CustomInput = ({
   control,
@@ -20,10 +24,10 @@ const CustomInput = ({
           <div className="flex flex-col w-full">
             <FormControl>
               <Input
-                placeholder={placeholder}
-                className="input-class"
-                type={name === 'password' ? 'password' : 'text'}
                 {...field}
+                placeholder={placeholder || ""}
+                className="input-class"
+                type={name === "password" ? "password" : "text"}
               />
             </FormControl>
             <FormMessage className="form-message mt-2"></FormMessage>

@@ -333,5 +333,5 @@ declare interface CustomInputProps {
   control: Control<z.infer<typeof formSchema>>;
   name: FieldPath<z.infer<typeof formSchema>>;
   label: string;
-  placeholder: string;
+  placeholder?: string;
 }
