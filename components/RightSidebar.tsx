@@ -2,8 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import BankCard from "./BankCard";
+import { RightSidebarProps } from "@/types";
 
-const RightSidebar = ({ transactions, banks, user }: RightSidebarProps) => {
+const RightSidebar = ({ user, transactions, banks}: RightSidebarProps) => {
   return (
     <aside className="right-sidebar">
       <section className="flex flex-col pb-8">
@@ -11,13 +12,13 @@ const RightSidebar = ({ transactions, banks, user }: RightSidebarProps) => {
         <div className="profile">
           <div className="profile-img">
             <span className="text-blue-500 font-bold text-5xl">
-              {user.firstName[0]}
+              {user.name[0]}
             </span>
           </div>
           <div className="profile-details">
             <div className="profile-name">
               <h1>
-                {user.firstName} {user.lastName}
+                {user.name}
               </h1>
             </div>
             <div className="profile-email">{user.email}</div>
@@ -47,7 +48,7 @@ const RightSidebar = ({ transactions, banks, user }: RightSidebarProps) => {
                 <BankCard
                   key={banks[1].$id}
                   account={banks[1]}
-                  userName={"${user.firstName} ${user.lastName}"}
+                  userName={`${user.firstName} ${user.lastName}`}
                   showBalance={false}
                 />
               </div>
