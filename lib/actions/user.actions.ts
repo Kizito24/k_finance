@@ -7,10 +7,11 @@ import { cookies } from "next/headers";
 import path from "path";
 import { parseStringify } from "../utils";
 import { email } from "zod";
+import { redirect } from "next/navigation";
 
-export const signIn = async ({email, password} : signInProps) => {
+export const signIn = async ({ email, password }: signInProps) => {
   try {
-    const {account} = await createAdminClient();
+    const { account } = await createAdminClient();
 
     const response = await account.createEmailPasswordSession(email, password);
 
@@ -32,18 +33,15 @@ export const signUp = async (userData: SignUpParams) => {
       password,
       `${firstName} ${lastName}`
     );
-    
-    const session = await account.createEmailPasswordSession(
-      email,
-      password,
-    );
+
+    const session = await account.createEmailPasswordSession(email, password);
     (await cookies()).set("appwrite-session", session.secret, {
       path: "/",
       httpOnly: true,
       sameSite: "strict",
       secure: true,
     });
- 
+
     return parseStringify(newUserAccount);
   } catch (error) {
     console.log("Error", error);
@@ -60,18 +58,19 @@ export async function getLoggedInUser() {
 
     return parseStringify(user);
   } catch (error) {
-    return null;
+    console.log(error);
   }
 }
 
 export const logoutAccount = async () => {
   try {
-    const {account} = await createSessionClient();
+    const { account } = await createSessionClient();
 
-    (await cookies()).delete('appwrite-session');
+    await account.deleteSession("current");
 
-    await account.deleteSession('current');
+    (await cookies()).delete("appwrite-session");
+    
   } catch (error) {
     return null;
   }
-}
+};

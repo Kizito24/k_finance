@@ -3,9 +3,12 @@ import HeaderBox from "@/components/HeaderBox";
 import React from "react";
 import RightSidebar from "@/components/RightSidebar";
 import { getLoggedInUser } from "@/lib/actions/user.actions";
+import { redirect } from "next/navigation";
 
 const Home = async () => {
   const loggedIn = await getLoggedInUser();
+
+  if (!loggedIn) redirect("/sign-in");
 
   return (
     <section className="home">
@@ -25,7 +28,11 @@ const Home = async () => {
         </header>
         RECENT TRANSACTIONS
       </div>
-      <RightSidebar user={loggedIn} transactions={[]} banks={[{ currentBalance : 657730.24 },{ currentBalance : 531730.24 }]} />
+      <RightSidebar
+        user={loggedIn}
+        transactions={[]}
+        banks={[{ currentBalance: 657730.24 }, { currentBalance: 531730.24 }]}
+      />
     </section>
   );
 };

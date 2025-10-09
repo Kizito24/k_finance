@@ -25,7 +25,7 @@ import { getLoggedInUser, signIn, signUp } from "@/lib/actions/user.actions";
 
 const AuthForm = ({ type }: { type: string }) => {
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState();
   const [isloading, setisloading] = useState(false);
 
   const formSchema = authFormSchema(type);
