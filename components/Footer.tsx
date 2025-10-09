@@ -34,4 +34,4 @@ const Footer = ({ user, type = "desktop" }: FooterProps) => {
   );
 };
 
-export default Footer;
+export default Footer; 
