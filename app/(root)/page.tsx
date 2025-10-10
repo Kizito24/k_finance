@@ -7,9 +7,13 @@ import { redirect } from "next/navigation";
 import { getAccount, getAccounts } from "@/lib/actions/bank.actions";
 import { SearchParamProps } from "@/types";
 
-const Home = async ({ searchParams: id, page }: SearchParamProps) => {
+const Home = async ({ searchParams }: SearchParamProps) => {
+  const params = await searchParams;
+  const id = params?.id;             // safely extract your `id`
+  const page = params?.page;
+
   const loggedIn = await getLoggedInUser();
-  const accounts = getAccounts({
+  const accounts = await getAccounts({
     userId: loggedIn.$id,
   });
 
@@ -30,7 +34,7 @@ const Home = async ({ searchParams: id, page }: SearchParamProps) => {
           <HeaderBox
             type="greeting"
             title="Welcome"
-            user={loggedIn?.name || "Guest"}
+            user={loggedIn?.firstName || "Guest"}
             subtext="Access and manage your account and transactions efficiently."
           />
           <TotalBalanceBox
