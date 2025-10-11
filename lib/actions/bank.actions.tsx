@@ -14,7 +14,14 @@ import { parseStringify } from "../utils";
 
 import { getTransactionsByBankId } from "./transaction.actions";
 import { getBanks, getBank } from "./user.actions";
-import { Bank, getAccountProps, getAccountsProps, getInstitutionProps, getTransactionsProps, Transaction } from "@/types";
+import {
+  Bank,
+  getAccountProps,
+  getAccountsProps,
+  getInstitutionProps,
+  getTransactionsProps,
+  Transaction,
+} from "@/types";
 
 // Get multiple bank accounts
 export const getAccounts = async ({ userId }: getAccountsProps) => {
@@ -54,9 +61,12 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
     );
 
     const totalBanks = accounts.length;
-    const totalCurrentBalance = accounts.reduce((total: any, account: { currentBalance: any; }) => {
-      return total + account.currentBalance;
-    }, 0);
+    const totalCurrentBalance = accounts.reduce(
+      (total: any, account: { currentBalance: any }) => {
+        return total + account.currentBalance;
+      },
+      0
+    );
 
     return parseStringify({ data: accounts, totalBanks, totalCurrentBalance });
   } catch (error) {
@@ -77,30 +87,31 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
     const accountData = accountsResponse.data.accounts[0];
 
     // get transfer transactions from appwrite
-    const transferTransactionsData = await getTransactionsByBankId({
+    const transferTransactionsData = (await getTransactionsByBankId({
       bankId: bank.$id,
-    });
+    })) || { documents: [] };
 
-    const transferTransactions = transferTransactionsData.documents.map(
-      (transferData: Transaction) => ({
-        id: transferData.$id,
-        name: transferData.name!,
-        amount: transferData.amount!,
-        date: transferData.$createdAt,
-        paymentChannel: transferData.channel,
-        category: transferData.category,
-        type: transferData.senderBankId === bank.$id ? "debit" : "credit",
-      })
-    );
+    const transferTransactions = Array.isArray(
+      transferTransactionsData.documents
+    )
+      ? transferTransactionsData.documents.map((transferData: Transaction) => ({
+          id: transferData.$id,
+          name: transferData.name!,
+          amount: transferData.amount!,
+          date: transferData.$createdAt,
+          paymentChannel: transferData.channel,
+          category: transferData.category,
+          type: transferData.senderBankId === bank.$id ? "debit" : "credit",
+        }))
+      : [];
 
     // get institution info from plaid
     const institution = await getInstitution({
       institutionId: accountsResponse.data.item.institution_id!,
     });
 
-    const transactions = await getTransactions({
-      accessToken: bank?.accessToken,
-    });
+    const transactions =
+      (await getTransactions({ accessToken: bank?.accessToken })) || [];
 
     const account = {
       id: accountData.account_id,
@@ -116,7 +127,7 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
     };
 
     // sort transactions by date such that the most recent transaction is first
-      const allTransactions = [...transactions, ...transferTransactions].sort(
+    const allTransactions = [...transactions, ...transferTransactions].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
 
@@ -152,35 +163,52 @@ export const getTransactions = async ({
   accessToken,
 }: getTransactionsProps) => {
   let hasMore = true;
-  let transactions: any = [];
+  let cursor: string | undefined = undefined;
+  const transactions: any[] = [];
 
   try {
-    // Iterate through each page of new transaction updates for item
+    // Validate token early
+    if (!accessToken) {
+      throw new Error("Missing Plaid access token");
+    }
+
+    // Paginate through transaction updates
     while (hasMore) {
       const response = await plaidClient.transactionsSync({
         access_token: accessToken,
+        cursor, // null for first call
       });
 
       const data = response.data;
 
-      transactions = response.data.added.map((transaction) => ({
-        id: transaction.transaction_id,
-        name: transaction.name,
-        paymentChannel: transaction.payment_channel,
-        type: transaction.payment_channel,
-        accountId: transaction.account_id,
-        amount: transaction.amount,
-        pending: transaction.pending,
-        category: transaction.category ? transaction.category[0] : "",
-        date: transaction.date,
-        image: transaction.logo_url,
-      }));
+      // Collect added transactions
+      if (Array.isArray(data.added)) {
+        transactions.push(
+          ...data.added.map((transaction) => ({
+            id: transaction.transaction_id,
+            name: transaction.name,
+            paymentChannel: transaction.payment_channel,
+            type: transaction.transaction_type ?? transaction.payment_channel,
+            accountId: transaction.account_id,
+            amount: transaction.amount,
+            pending: transaction.pending,
+            category: transaction.category?.[0] || "",
+            date: transaction.date,
+            image: transaction.logo_url,
+          }))
+        );
+      }
 
+      cursor = data.next_cursor;
       hasMore = data.has_more;
     }
 
-    return parseStringify(transactions);
-  } catch (error) {
-    console.error("An error occurred while getting the accounts:", error);
+    return transactions; // return raw array, not stringified
+  } catch (error: any) {
+    console.error(
+      "Plaid transactionsSync error:",
+      error.response?.data || error.message
+    );
+    return []; // fail safely
   }
 };
