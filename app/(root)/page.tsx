@@ -6,11 +6,14 @@ import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 import { getAccount, getAccounts } from "@/lib/actions/bank.actions";
 import { SearchParamProps } from "@/types";
+import RecentTransactions from "@/components/RecentTransactions";
 
-const Home = async ({ searchParams }: SearchParamProps) => {
-  const params = await searchParams;
-  const id = params?.id;             // safely extract your `id`
-  const page = params?.page;
+const Home = async (props : SearchParamProps) => {
+   const searchParams = await props.searchParams; // ✅ must await
+  const id = searchParams?.id;
+  const page = searchParams?.page;
+  
+  const currentPage = Number(page as string) || 1;
 
   const loggedIn = await getLoggedInUser();
   const accounts = await getAccounts({
@@ -43,7 +46,11 @@ const Home = async ({ searchParams }: SearchParamProps) => {
             totalCurrentBalance={accounts?.totalCurrentBalance}
           />
         </header>
-        RECENT TRANSACTIONS
+        <RecentTransactions
+        accounts={accountsData}
+        transactions={account?.transactions} 
+        appwriteItemId={appwriteItemId}
+        page={currentPage} />
       </div>
       <RightSidebar
         user={loggedIn}
