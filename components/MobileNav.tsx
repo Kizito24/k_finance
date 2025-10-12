@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import Footer from "./Footer";
 import { MobileNavProps } from "@/types";
+import PlaidLink from "./PlaidLink";
 
 const MobileNav = ({ user }: MobileNavProps) => {
   const pathname = usePathname();
@@ -90,7 +91,7 @@ const MobileNav = ({ user }: MobileNavProps) => {
                     </SheetClose>
                   );
                 })}
-                USER
+                <PlaidLink user={user}/>
               </nav>
             </SheetClose>
             <Footer user={user} type='mobile'/>
