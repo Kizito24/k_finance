@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: "K-Finance",
   description: "K-Finance is a modern banking platform for everyone",
   icons: {
-    icon: '/icon/logo.svg',
+    icon: '/icons/logo.svg',
   }
 };
 

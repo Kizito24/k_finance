@@ -2,10 +2,6 @@ import React from "react";
 import { FormControl, FormField, FormLabel, FormMessage } from "./ui/form";
 import { Input } from "./ui/input";
 import { CustomInputProps } from "@/types";
-import { authFormSchema } from "@/lib/utils";
-
-  const formSchema = authFormSchema('sign-up');
-
 
 const CustomInput = ({
   control,

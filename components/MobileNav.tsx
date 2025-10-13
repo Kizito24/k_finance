@@ -10,7 +10,6 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -91,10 +90,10 @@ const MobileNav = ({ user }: MobileNavProps) => {
                     </SheetClose>
                   );
                 })}
-                <PlaidLink user={user}/>
+                <PlaidLink user={user} />
               </nav>
             </SheetClose>
-            <Footer user={user} type='mobile'/>
+            <Footer user={user} type="mobile" />
           </div>
         </SheetContent>
       </Sheet>

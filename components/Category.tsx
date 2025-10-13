@@ -11,7 +11,7 @@ const Category = ({ category }: CategoryProps) => {
     bg,
     circleBg,
     text: { main, count },
-    progress: { bg: progressBg, indicator },
+    progress: { bg: progressBg},
     icon,
   } = topCategoryStyles[category.name as keyof typeof topCategoryStyles] ||
   topCategoryStyles.default;
