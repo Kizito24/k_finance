@@ -176,7 +176,7 @@ export const getTransactions = async ({
     while (hasMore) {
       const response = await plaidClient.transactionsSync({
         access_token: accessToken,
-        cursor, // null for first call
+        cursor, // null for fiirst call
       });
 
       const data = response.data;
